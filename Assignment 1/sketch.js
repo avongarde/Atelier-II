@@ -1,27 +1,28 @@
 // Francisco Samayoa, Annie Zhang, Isaak Shingray ~ Assignment 1: Mushroom Forest
+// fern, tint and grass
 
 // https://p5js.org/examples/interaction-wavemaker.html
 
 // Spring drawing constants for top bar
-var springHeight = 32,
-    left,
-    right,
-    maxHeight = 400,
-    minHeight = 200,
-    over = false,
-    move = false;
+// var springHeight = 32,
+//     left,
+//     right,
+//     maxHeight = 400,
+//     minHeight = 200,
+//     over = false,
+//     move = false;
 
 // Spring simulation constants
-var M = 0.8,  // Mass
-    K = 0.2,  // Spring constant
-    D = 0.92, // Damping
-    R = 150;  // Rest position
+// var M = 0.8,  // Mass
+//     K = 0.2,  // Spring constant
+//     D = 0.92, // Damping
+//     R = 150;  // Rest position
 
 // Spring simulation variables
-var ps = R,   // Position
-    vs = 0.0, // Velocity
-    as = 0,   // Acceleration
-    f = 0;    // Force
+// var ps = R,   // Position
+//     vs = 0.0, // Velocity
+//     as = 0,   // Acceleration
+//     f = 0;    // Force
 
 let offset = 0.5;
 let easing = 0.05;
@@ -31,6 +32,10 @@ var newX = 0; // mouseX > PubNub (Isaak)
 var newX2 = 0; // mouseX > PubNub (Annie)
 var newY = 0; // mouseY > PubNub (Isaak)
 var newY2 = 0; // mouseY > PubNub (Annie)
+var newUp = false;
+var newDown = false;
+var newLeft = false;
+var newRight = false;
 var t = 0; // time variable
 
 var opacity = 255;
@@ -58,12 +63,13 @@ function setup() {
   imageMode(CENTER);
   noStroke();
   background(255, 10);
+  // image()
   // smallMushroom.loadPixels();
   // mushroom.loadPixels();
   // mushroom.blend(smallMushroom, 0, 0, window.innerWidth, window.innerHeight, 0, 0, window.innerWidth,
   //   window.innerHeight, ADD);
   // image(smallMushroom, width/2, height/2);
-  // image(mushroom, width/2, height/2);
+  image(mushroom, width/2, height/2);
   //image(mushroom2, 0, 0);
   left = width/2 - 100;
   right = width/2 + 100;
@@ -84,8 +90,7 @@ function setup() {
 
 function draw() {
   // background(112, 0, 102, 10);
-  grass();
-
+  // grass();
   if (keyIsDown(UP_ARROW)) {
     tint(0, 153, 204);
     image(mushroom, offset, 0);
@@ -99,7 +104,20 @@ function draw() {
     tint(255, 126);
     image(mushroom, offset, 0);
   }
-
+  // if (newUp == true) {
+  //   tint(0, 153, 204);
+  //   image(mushroom, offset, 0);
+  // } else if (newRight == true) {
+  //   tint(204, 153, 0);
+  //   image(mushroom, offset, 0);
+  // } else if (newLeft == true) {
+  //   tint(0, 204, 153);
+  //   image(mushroom, offset, 0);
+  // } else if (newDown == true) {
+  //   tint(255, 126);
+  //   image(mushroom, offset, 0);
+  // }
+  grass();
   // if (over) {
   //   updateSpring();
   //   drawSpring();
@@ -110,7 +128,7 @@ function draw() {
   opacity *= 0.99;
   translate(width/2, height);
   var angle = random(0, 6.14);
-  branch(281, angle);
+  // branch(281, angle);
   // branch(500, angle);
 
   let dx = newX - mushroom.width / 2 - offset;
@@ -119,7 +137,7 @@ function draw() {
   offset += dy * easing;
   tint(255, 127); // Display at half opacity
   image(mushroom, offset, 0);
-  // image(smallMushroom, offset, 0);
+  branch(281, angle);
 }
 
 function branch(length, theta) {
@@ -139,22 +157,22 @@ function branch(length, theta) {
     pop();
   }
 }
-
-function keyReleased(){
-
-  // Send Data to the server to draw it in all other canvases
-  dataServer.publish(
-    {
-      channel: channelName,
-      message:{
-
-       x: mouseX,
-       y: mouseY
-
-           //get the value from the text box and send it as part of the message
-      }
-    });
-}
+//
+// function keyReleased(){
+//
+//   // Send Data to the server to draw it in all other canvases
+//   // dataServer.publish(
+//   //   {
+//   //     channel: channelName,
+//   //     message:{
+//   //
+//   //      x: mouseX,
+//   //      y: mouseY
+//   //
+//   //          //get the value from the text box and send it as part of the message
+//   //     }
+//   //   });
+// }
 
 function readIncoming(inMessage) //when new data comes in it triggers this function,
 {                               // this works becsuse we subscribed to the channel in setup()
@@ -166,7 +184,11 @@ function readIncoming(inMessage) //when new data comes in it triggers this funct
     newX2 = inMessage.message.x2;
     newY = inMessage.message.y;
     newY2 = inMessage.message.y2;
-    console.log(inMessage.message.x2, inMessage.message.y2);
+    newUp = inMessage.message.up;
+    newDown = inMessage.message.down;
+    newLeft = inMessage.message.left;
+    newRight = inMessage.message.right;
+    //console.log(inMessage.message.x2, inMessage.message.y2);
   }
 }
 
@@ -175,7 +197,7 @@ function grass(){
 
   // make a x and y grid of ellipses
   for (let x = 0; x <= width; x = x + 30) {
-    for (let y = 0; y <= 100; y = y + 30) {
+    for (let y = 500; y <= height; y = y + 30) {
       // starting point of each circle depends on mouse position
       let xAngle = map(mouseX, 0, width, -4 * PI, 4 * PI, true);
       let yAngle = map(mouseY, 0, height, -4 * PI, 4 * PI, true);
@@ -192,65 +214,65 @@ function grass(){
   t = t + 0.01; // update time
 }
 
-function drawSpring() {
-  // Draw base
-  // tint(0);
-  fill(226, 255, 140);
-  var baseWidth = 0.5 * ps + -8;
-  // rect(width/2 - baseWidth, ps + springHeight, width/2 + baseWidth, height);
-  rect(mouseX - baseWidth, mouseY + springHeight, width/2 + baseWidth, height);
+// function drawSpring() {
+//   // Draw base
+//   // tint(0);
+//   fill(226, 255, 140);
+//   var baseWidth = 0.5 * ps + -8;
+//   // rect(width/2 - baseWidth, ps + springHeight, width/2 + baseWidth, height);
+//   rect(mouseX - baseWidth, mouseY + springHeight, width/2 + baseWidth, height);
+//
+//   // Set color and draw top bar
+//   // if (over || move) {
+//   //   fill(255);
+//   // } else {
+//   //   fill(204);
+//   // }
+//     fill(244, 104, 66);
+//       arc(left+100, ps+50, right-100, ps + springHeight+100, PI, TWO_PI);
+//
+// }
 
-  // Set color and draw top bar
-  // if (over || move) {
-  //   fill(255);
-  // } else {
-  //   fill(204);
-  // }
-    fill(244, 104, 66);
-      arc(left+100, ps+50, right-100, ps + springHeight+100, PI, TWO_PI);
+// function updateSpring() {
+//   // Update the spring position
+//   if ( !move ) {
+//     f = -K * ( ps - R ); // f=-ky
+//     as = f / M;          // Set the acceleration, f=ma == a=f/m
+//     vs = D * (vs + as);  // Set the velocity
+//     ps = ps + vs;        // Updated position
+//   }
+//
+//   if (abs(vs) < 0.1) {
+//     vs = 0.0;
+//   }
+//
+//   // Test if mouse if over the top bar
+//   if (mouseX <width && mouseY < height + springHeight) {
+//     over = true;
+//   } else {
+//     over = false;
+//   }
+//
+//   // Set and constrain the position of top bar
+//   if (move) {
+//     ps = mouseY - springHeight/2;
+//     ps = constrain(ps, minHeight, maxHeight);
+//   }
+// }
 
-}
-
-function updateSpring() {
-  // Update the spring position
-  if ( !move ) {
-    f = -K * ( ps - R ); // f=-ky
-    as = f / M;          // Set the acceleration, f=ma == a=f/m
-    vs = D * (vs + as);  // Set the velocity
-    ps = ps + vs;        // Updated position
-  }
-
-  if (abs(vs) < 0.1) {
-    vs = 0.0;
-  }
-
-  // Test if mouse if over the top bar
-  if (mouseX <width && mouseY < height + springHeight) {
-    over = true;
-  } else {
-    over = false;
-  }
-
-  // Set and constrain the position of top bar
-  if (move) {
-    ps = mouseY - springHeight/2;
-    ps = constrain(ps, minHeight, maxHeight);
-  }
-}
-
-function mousePressed() {
-  if (over) {
-    updateSpring();
-    drawSpring();
-    move = true;
-  }
-}
-
-function mouseReleased() {
-  move = false;
-  updateSpring();
-  drawSpring();
-}
+// function mousePressed() {
+//   if (over) {
+//     updateSpring();
+//     drawSpring();
+//     move = true;
+//   }
+// }
+//
+// function mouseReleased() {
+//   move = false;
+//   updateSpring();
+//   drawSpring();
+// }
 
 // function keyPressed() {
 //   if (keyCode === UP_ARROW) {
