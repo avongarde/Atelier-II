@@ -1,32 +1,10 @@
 // Francisco Samayoa, Annie Zhang, Isaak Shingray ~ Assignment 1: Mushroom Forest
-// fern, tint and grass
 
 // https://p5js.org/examples/interaction-wavemaker.html
 
-// Spring drawing constants for top bar
-// var springHeight = 32,
-//     left,
-//     right,
-//     maxHeight = 400,
-//     minHeight = 200,
-//     over = false,
-//     move = false;
-
-// Spring simulation constants
-// var M = 0.8,  // Mass
-//     K = 0.2,  // Spring constant
-//     D = 0.92, // Damping
-//     R = 150;  // Rest position
-
-// Spring simulation variables
-// var ps = R,   // Position
-//     vs = 0.0, // Velocity
-//     as = 0,   // Acceleration
-//     f = 0;    // Force
-
 let offset = 0.5;
 let easing = 0.05;
-var mushroom, smallMushroom;
+var mushroom, smallMushroom; // background images
 
 var newX = 0; // mouseX > PubNub (Isaak)
 var newX2 = 0; // mouseX > PubNub (Annie)
@@ -50,7 +28,6 @@ var value = 0;
 
 function preload() {
   mushroom = loadImage("mushroom.jpg");
-  // mushroom2 = loadImage("mushroom2.jpg")
   smallMushroom = loadImage("smallMushroom.png");
 
   soundFormats('mp3', 'ogg');
@@ -59,18 +36,11 @@ function preload() {
 
 function setup() {
   createCanvas(window.innerWidth, window.innerHeight);
-  frameRate(30);
+  frameRate(30); // slow the frame rate to save CPU
   imageMode(CENTER);
   noStroke();
   background(255, 10);
-  // image()
-  // smallMushroom.loadPixels();
-  // mushroom.loadPixels();
-  // mushroom.blend(smallMushroom, 0, 0, window.innerWidth, window.innerHeight, 0, 0, window.innerWidth,
-  //   window.innerHeight, ADD);
-  // image(smallMushroom, width/2, height/2);
   image(mushroom, width/2, height/2);
-  //image(mushroom2, 0, 0);
   left = width/2 - 100;
   right = width/2 + 100;
   mySound.setVolume(0.5);
@@ -89,8 +59,7 @@ function setup() {
 }
 
 function draw() {
-  // background(112, 0, 102, 10);
-  // grass();
+  // Arrow keys controlling the image tint
   if (keyIsDown(UP_ARROW)) {
     tint(0, 153, 204);
     image(mushroom, offset, 0);
@@ -104,32 +73,13 @@ function draw() {
     tint(255, 126);
     image(mushroom, offset, 0);
   }
-  // if (newUp == true) {
-  //   tint(0, 153, 204);
-  //   image(mushroom, offset, 0);
-  // } else if (newRight == true) {
-  //   tint(204, 153, 0);
-  //   image(mushroom, offset, 0);
-  // } else if (newLeft == true) {
-  //   tint(0, 204, 153);
-  //   image(mushroom, offset, 0);
-  // } else if (newDown == true) {
-  //   tint(255, 126);
-  //   image(mushroom, offset, 0);
-  // }
+  // Call the grass function
   grass();
-  // if (over) {
-  //   updateSpring();
-  //   drawSpring();
-  //   // clear();
-  // }
 
   stroke(255, opacity);
   opacity *= 0.99;
   translate(width/2, height);
   var angle = random(0, 6.14);
-  // branch(281, angle);
-  // branch(500, angle);
 
   let dx = newX - mushroom.width / 2 - offset;
   offset += dx * easing;
@@ -137,14 +87,13 @@ function draw() {
   offset += dy * easing;
   tint(255, 127); // Display at half opacity
   image(mushroom, offset, 0);
+  // Call the branch function after the image offsets
   branch(281, angle);
 }
 
 function branch(length, theta) {
   line(0, 0, 0, -length);
   translate(0, -length);
-
-  var a = random(1.0);
 
   if(length > 2){
     push();
@@ -157,22 +106,6 @@ function branch(length, theta) {
     pop();
   }
 }
-//
-// function keyReleased(){
-//
-//   // Send Data to the server to draw it in all other canvases
-//   // dataServer.publish(
-//   //   {
-//   //     channel: channelName,
-//   //     message:{
-//   //
-//   //      x: mouseX,
-//   //      y: mouseY
-//   //
-//   //          //get the value from the text box and send it as part of the message
-//   //     }
-//   //   });
-// }
 
 function readIncoming(inMessage) //when new data comes in it triggers this function,
 {                               // this works becsuse we subscribed to the channel in setup()
@@ -193,6 +126,7 @@ function readIncoming(inMessage) //when new data comes in it triggers this funct
 }
 
 function grass(){
+  // Make the grass green
   fill(40, 200, 40);
 
   // make a x and y grid of ellipses
@@ -213,81 +147,3 @@ function grass(){
   }
   t = t + 0.01; // update time
 }
-
-// function drawSpring() {
-//   // Draw base
-//   // tint(0);
-//   fill(226, 255, 140);
-//   var baseWidth = 0.5 * ps + -8;
-//   // rect(width/2 - baseWidth, ps + springHeight, width/2 + baseWidth, height);
-//   rect(mouseX - baseWidth, mouseY + springHeight, width/2 + baseWidth, height);
-//
-//   // Set color and draw top bar
-//   // if (over || move) {
-//   //   fill(255);
-//   // } else {
-//   //   fill(204);
-//   // }
-//     fill(244, 104, 66);
-//       arc(left+100, ps+50, right-100, ps + springHeight+100, PI, TWO_PI);
-//
-// }
-
-// function updateSpring() {
-//   // Update the spring position
-//   if ( !move ) {
-//     f = -K * ( ps - R ); // f=-ky
-//     as = f / M;          // Set the acceleration, f=ma == a=f/m
-//     vs = D * (vs + as);  // Set the velocity
-//     ps = ps + vs;        // Updated position
-//   }
-//
-//   if (abs(vs) < 0.1) {
-//     vs = 0.0;
-//   }
-//
-//   // Test if mouse if over the top bar
-//   if (mouseX <width && mouseY < height + springHeight) {
-//     over = true;
-//   } else {
-//     over = false;
-//   }
-//
-//   // Set and constrain the position of top bar
-//   if (move) {
-//     ps = mouseY - springHeight/2;
-//     ps = constrain(ps, minHeight, maxHeight);
-//   }
-// }
-
-// function mousePressed() {
-//   if (over) {
-//     updateSpring();
-//     drawSpring();
-//     move = true;
-//   }
-// }
-//
-// function mouseReleased() {
-//   move = false;
-//   updateSpring();
-//   drawSpring();
-// }
-
-// function keyPressed() {
-//   if (keyCode === UP_ARROW) {
-//     tint(0, 153, 204, 126);
-//     image(mushroom, offset, 0);
-//   } else if (keyCode === RIGHT_ARROW) {
-//     tint(204, 153, 0, 126);
-//     image(mushroom, offset, 0);
-//   } else if (keyCode === LEFT_ARROW) {
-//     tint(0, 204, 153, 126);
-//     image(mushroom, offset, 0);
-//   } else if (keyCode === DOWN_ARROW) {
-//     tint(255, 126);
-//     image(mushroom, offset, 0);
-//   }
-//
-//   // return false; // prevent default
-// }
